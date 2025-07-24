@@ -1,22 +1,61 @@
 #!  running guide 
 #! WITHOUT DOCKER COMPOSE
+#! OWASP-DEP-CHECK
 #! docker run --rm -v ${PWD}:/src -v ${PWD}/odc-reports:/report -v ${PWD}/odc-data:/usr/share/dependency-check/data owasp/dependency-check 
 #! --scan /src --format "HTML" --out /report --nvdApiKey <your_nvd_api_key>
 
 #! WITH DOCKER COMPOSE 
 #! docker-compose up --build -d
 services: 
-  owasp-check: 
-    image: owasp/dependency-check 
-    container_name: owasp-check 
-    env_file: .env 
-    environment: 
-      - NVD_API_KEY=${NVD_API_KEY}
-    volumes: 
-      - ./:/src
-      - ./odc-reports:/reports
-      - ./odc-data:/usr/share/dependency-check/data 
-    command: --scan /src/backend --format "HTML" --out /reports --nvdApiKey ${NVD_API_KEY}
+  # owasp-check: 
+  #   image: owasp/dependency-check 
+  #   container_name: owasp-check 
+  #   env_file: .env 
+  #   environment: 
+  #     - NVD_API_KEY=${NVD_API_KEY}
+  #   volumes: 
+  #     - ./:/src
+  #     - ./odc-reports:/reports
+  #     - ./odc-data:/usr/share/dependency-check/data 
+  #   command: --scan /src/backend --format "HTML" --out /reports --nvdApiKey ${NVD_API_KEY}
 
+
+
+#! SELENIUM SERVER
+#! WITHOUT DOCKER COMPOSE 
+#! docker run -d --rm -p 4444:4444 --name selenium-server --shm-size=2g selenium/standalone-chrome:latest
+  selenium-server:
+    image: selenium/standalone-chrome:latest
+    container_name: selenium-server
+    ports:
+      - "4444:4444"
+    shm_size: 2g 
+
+
+  testweb-server:
+    build:
+      context: ./frontend
+      dockerfile: frontend.Dockerfile
+    container_name: webServer
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3000/api
+    depends_on:
+      - testbackend
+    volumes:
+      - ./frontend:/app 
+      - /app/node_modules 
+
+  testbackend:
+    build:
+      context: ./backend
+      dockerfile: backend.Dockerfile
+    container_name: testbackend
+    ports:
+      - "3000:3000"
+    
+
+ 
 
     

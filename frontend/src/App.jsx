@@ -1,33 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import axios from 'axios'; 
+import { useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [result, setResult] = useState(null);
 
+  const handleSubmit = async (event) => { 
+    event.preventDefault(); 
+    const formData = new FormData(event.target); 
+    const num1 = formData.get('num1'); 
+    const num2 = formData.get('num2'); 
+    console.log('Numbers:', num1, num2); 
+
+    try { 
+      const response = await axios.post('/api/add', { num1, num2 }); 
+      console.log('Result:', response.data.result); 
+      setResult(response.data.result); 
+    } catch (error) { 
+      console.error('Error:', error); 
+    } 
+
+  }
   return (
     <>
+    <form onSubmit={handleSubmit}> 
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <div>Enter two numbers to add: </div>
+        <input type="number" name="num1" placeholder="Enter a number" /> 
+        <input type="number" name="num2" placeholder="Enter another number" /> 
+        <button type="submit">Submit</button> 
+
+        <div id="result">
+          {result !== null && <div id="finalResult">{result}</div>}
+        </div> 
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+    </form>
     </>
   )
 }
