@@ -1,0 +1,22 @@
+#!  running guide 
+#! WITHOUT DOCKER COMPOSE
+#! docker run --rm -v ${PWD}:/src -v ${PWD}/odc-reports:/report -v ${PWD}/odc-data:/usr/share/dependency-check/data owasp/dependency-check 
+#! --scan /src --format "HTML" --out /report --nvdApiKey <your_nvd_api_key>
+
+#! WITH DOCKER COMPOSE 
+#! docker-compose up --build -d
+services: 
+  owasp-check: 
+    image: owasp/dependency-check 
+    container_name: owasp-check 
+    env_file: .env 
+    environment: 
+      - NVD_API_KEY=${NVD_API_KEY}
+    volumes: 
+      - ./:/src
+      - ./odc-reports:/reports
+      - ./odc-data:/usr/share/dependency-check/data 
+    command: --scan /src/backend --format "HTML" --out /reports --nvdApiKey ${NVD_API_KEY}
+
+
+    
