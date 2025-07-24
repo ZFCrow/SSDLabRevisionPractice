@@ -19,7 +19,7 @@ jobs:
                     node-version: '20' 
             
             -   name: Install dependencies 
-                run: npm install 
+                run: cd backend && npm install 
             
             -   name: Compose up the services 
                 run: docker-compose up --build -d 
@@ -27,7 +27,7 @@ jobs:
             -   name: Wait for services to be ready 
                 run: sleep 10 
 
-                
+
             -   name: run the tests 
                 run: cd backend && npx mocha
 
