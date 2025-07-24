@@ -28,7 +28,10 @@ jobs:
                     path: . 
                     format: 'HTML' 
                     out: 'odc-reports'
-                    
+            
+            -   name: Debug (list files) 
+                run: ls 
+                
             -   name: Upload Report
                 uses: actions/upload-artifact@v4
                 with: 
