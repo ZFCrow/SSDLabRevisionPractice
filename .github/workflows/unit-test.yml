@@ -22,7 +22,7 @@ jobs:
                 run: cd backend && npm install 
             
             -   name: Compose up the services 
-                run: docker-compose up --build -d 
+                run: sudo docker compose up --build -d 
             
             -   name: Wait for services to be ready 
                 run: sleep 10 
