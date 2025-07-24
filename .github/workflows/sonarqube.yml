@@ -1,0 +1,34 @@
+name: SonarQube Analysis
+
+on:
+  push:
+    branches: [ main ]
+  # pull_request:
+  #   branches: [ master ]
+
+jobs:
+  sonarqube:
+    name: Analyze with SonarQube
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: cd frontend && npm install && cd ../backend && npm install 
+    
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        with:
+          args: >
+            -D sonar.projectKey=${{ secrets.SONARQUBE_PROJECT_KEY }}
+            -D sonar.sources=.
+            -D sonar.host.url=${{ secrets.SONARQUBE_URL }}
+            -D sonar.login=${{ secrets. }}
